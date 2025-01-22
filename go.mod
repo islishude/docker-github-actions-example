@@ -1,3 +1,3 @@
-module github.com/islishude/docker-multi-arch-ga
+module github.com/islishude/docker-github-actions-example
 
-go 1.23.4
+go 1.23
