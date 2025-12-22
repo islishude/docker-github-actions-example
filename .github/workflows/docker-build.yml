@@ -108,14 +108,9 @@ jobs:
 
       - name: Create manifest list and push
         working-directory: ${{ runner.temp }}/digests
-        shell: bash
         run: |
-          set -euo pipefail
-
-          readarray -d '' -t tags < <(jq -jr '.tags[] | "-t\u0000" + . + "\u0000"' <<< "$DOCKER_METADATA_OUTPUT_JSON")
-          readarray -d '' -t annotations < <(jq -jr '.annotations[] | "--annotation\u0000" + . + "\u0000"' <<< "$DOCKER_METADATA_OUTPUT_JSON")
-
-          docker buildx imagetools create "${tags[@]}" "${annotations[@]}" \
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.GHCR_REPO }}@sha256:%s ' *)
 
       - name: Inspect image
